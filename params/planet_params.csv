@@ -1,0 +1,3 @@
+planet,mass,period,ecc
+TestPlanet0,1.0,365.25,0.0167
+TestPlanet1,5.0,30.0,0.03
