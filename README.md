@@ -9,7 +9,7 @@ Clone the repository (`git clone https://github.com/afgupta/ExoRVFisher`) and in
 * `scipy`
 * `matplotlib` (if using plotting features)
 * `jax`<0.6 (*must* be <0.6 for compatibility with `exoplanet-core`)
-* `exoplanet-core` (install as `"python3 -m pip install "exoplanet-core[jax]"`)
+* [`exoplanet-core`](https://github.com/exoplanet-dev/exoplanet-core) (install as `"python3 -m pip install "exoplanet-core[jax]"`)
 
 # Code Description
 
