@@ -18,6 +18,8 @@ Both of these are run via the command line and accept a number of arguments and 
 the details of the set of observations to be analyzed, (2) a configuration file (see the `/config/` folder for examples), (3) a csv with
 input stellar parameters, and (4) a csv with orbital parameters for the planet(s) of interest.
 
+**A complete description of the inputs can be found in the `main` function of each of these scripts**
+
 `run_fisher_grid.py` calculates the expected Fisher information over a grid of orbital parameters, with bounds and resolution specified in
 the input configuration file. It can optionally produce a plot similar to Figure 6 of [Gupta & Bedell et al. (2024)](https://ui.adsabs.harvard.edu/abs/2024AJ....168...29G/abstract), e.g.: 
 
