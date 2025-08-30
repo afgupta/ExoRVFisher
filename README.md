@@ -21,12 +21,12 @@ input stellar parameters, and (4) a csv with orbital parameters for the planet(s
 `run_fisher_grid.py` calculates the expected Fisher information over a grid of orbital parameters, with bounds and resolution specified in
 the input configuration file. It can optionally produce a plot similar to Figure 6 of [Gupta & Bedell et al. (2024)](https://ui.adsabs.harvard.edu/abs/2024AJ....168...29G/abstract), e.g.: 
 
-<img src=https://github.com/afgupta/ExoRVFisher/blob/main/Example_results/Example_TestStar2_sensitivity_02B.png width=75% height=75%>
+<img src=https://github.com/afgupta/ExoRVFisher/blob/main/Example_results/Example_TestStar2_sensitivity_02B.png width=60% height=60%>
 
 `run_fisher_progression.py` calculates the expected Fisher information as a function of the number of input observations for a single set of
 orbital parameters. It can optionally produce a plot similar to Figure 7 of [Gupta & Bedell et al. (2024)](https://ui.adsabs.harvard.edu/abs/2024AJ....168...29G/abstract), e.g.:
 
-<img src=https://github.com/afgupta/ExoRVFisher/blob/main/Example_results/Example_fisher_progress_TestPlanet1_03A.png width=75% height=75%>
+<img src=https://github.com/afgupta/ExoRVFisher/blob/main/Example_results/Example_fisher_progress_TestPlanet1_03A.png width=60% height=60%>
 
 # Examples
 
