@@ -1,9 +1,4 @@
 import numpy as np
-import astropy.time
-
-
-def jd2datetime(times):
-    return np.array([astropy.time.Time(time,format="jd",scale="utc").datetime for time in times])
 
 def mass_from_orbit(P, K, mstar=1.0, ecc=0.0, units='g'):
     msun=1.9885e33
