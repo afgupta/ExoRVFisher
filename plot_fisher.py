@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import cm
 from matplotlib.colors import ListedColormap
 
 import utils
@@ -46,7 +45,7 @@ def plot_sensitivity(outdir, survey, star, run_id, m_basis, p_basis, k_uncertain
         
         contour_color='w'
         
-        magma = cm.get_cmap('magma', 225)
+        magma = plt.get_cmap('magma', 225)
         magma2=ListedColormap(magma(np.linspace(0,1,225)**0.75)[5:])
         cax=ax.pcolor(p_basis, m_basis, 1./sensitivity, cmap=magma2, vmin=0,vmax=1., shading='auto')
         
