@@ -59,6 +59,33 @@ def fisher_keplerian_gamma(jac, Sigma_inv, obstime, K, period, phi, gamma_mask,
         
     return C
 
+def fisher_two_keplerian_gamma(jac_0, jac, Sigma_inv, obstime, params_0, K, period, phi, gamma_mask,
+                           ecc=0, omega=0, eccentric=False):
+    if eccentric:
+        params=jnp.array([K, period, phi, ecc, omega], dtype=float)
+    else:
+        params=jnp.array([K, period, phi])
+
+
+    J_kep_0 = jac_0(params_0, obstime)
+    J_kep = jac(params, obstime)
+        
+    J = np.concatenate((J_kep, J_kep_0, gamma_mask.T), axis=1)
+    
+    
+    B=J.T @ Sigma_inv @ J
+
+
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message="Ill-conditioned matrix")
+            C=linalg.solve(B, np.identity(len(params)+len(params_0)+len(gamma_mask)))
+    except linalg.LinAlgError:
+        # print('Singular matrix')
+        C=np.full(np.shape(B),np.nan)
+        
+    return C
+
 def fisher_single_planet(Sigma_inv, obstime, gamma_mask, mstar,
                          mass, period, phi_basis,
                          ecc=0, omega_basis=None, eccentric=False):
@@ -154,6 +181,55 @@ def fisher_grid_series(Sigma_inv, obstime, gamma_mask, mstar,
                     Ch[k][p][h]=C[2][2]
 
         return Ck, Cp, Ch
+    
+def fisher_grid_series_two(Sigma_inv, obstime, gamma_mask, mstar,
+                       m_basis, p_basis, phi_basis, params_0,
+                       ecc_basis=None, omega_basis=None, eccentric=False):
+
+    if eccentric:
+        
+        Ck=np.zeros((len(m_basis),len(p_basis),len(phi_basis),len(ecc_basis),len(omega_basis)))
+        Cp=np.zeros((len(m_basis),len(p_basis),len(phi_basis),len(ecc_basis),len(omega_basis)))
+        Ch=np.zeros((len(m_basis),len(p_basis),len(phi_basis),len(ecc_basis),len(omega_basis)))
+        Ce=np.zeros((len(m_basis),len(p_basis),len(phi_basis),len(ecc_basis),len(omega_basis)))
+        Cw=np.zeros((len(m_basis),len(p_basis),len(phi_basis),len(ecc_basis),len(omega_basis)))
+        
+        for k, mass in enumerate(m_basis):
+            for p, period in enumerate(p_basis):
+                K = K_from_mass(mass, period, mstar=mstar)
+                for h, phi in enumerate(phi_basis):
+                    for e, ecc in enumerate(ecc_basis):
+                        for w, omega in enumerate(omega_basis):
+                            C = fisher_two_keplerian_gamma(jac_ecc, jac_ecc, Sigma_inv, obstime, params_0, K, period, phi, gamma_mask,
+                                                       ecc=ecc, omega=omega, eccentric=True)
+                
+                            Ck[k][p][h][e][w]=C[0][0]
+                            Cp[k][p][h][e][w]=C[1][1]
+                            Ch[k][p][h][e][w]=C[2][2]
+                            Ce[k][p][h][e][w]=C[3][3]
+                            Cw[k][p][h][e][w]=C[4][4]
+
+        return Ck, Cp, Ch, Ce, Cw
+
+
+    else:
+    
+        Ck=np.zeros((len(m_basis),len(p_basis),len(phi_basis)))
+        Cp=np.zeros((len(m_basis),len(p_basis),len(phi_basis)))
+        Ch=np.zeros((len(m_basis),len(p_basis),len(phi_basis)))
+        
+        for k, mass in enumerate(m_basis):
+            for p, period in enumerate(p_basis):
+                K = K_from_mass(mass, period, mstar=mstar)
+                for h, phi in enumerate(phi_basis):
+                    C = fisher_two_keplerian_gamma(jac_ecc, jac_circ, Sigma_inv, obstime, params_0, K, period, phi, gamma_mask)
+        
+                    Ck[k][p][h]=C[0][0]
+                    Cp[k][p][h]=C[1][1]
+                    Ch[k][p][h]=C[2][2]
+
+        return Ck, Cp, Ch        
+
 
 def fisher_grid_parallel(args, mp):
     

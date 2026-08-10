@@ -6,7 +6,7 @@ import covariance
 
 from plot_fisher import plot_sensitivity
 
-from fisher import fisher_grid_parallel, fisher_grid_series, construct_parameter_grid
+from fisher import fisher_grid_parallel, fisher_grid_series, fisher_grid_series_two, construct_parameter_grid
 
 
 def recast_bool(string):
@@ -105,6 +105,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--configfile', default='fisher_base.config')
     parser.add_argument('-e', '--eccentric', action='store_true', default=False)
     parser.add_argument('-l', '--parallel', action='store_true', default=False)
+    parser.add_argument('-k', '--nknown', default=0)
     parser.add_argument('-t', '--nthreads', default=4)
     parser.add_argument('-r', '--readcovar', action='store_true', default=False)
     parser.add_argument('-s', '--save', action='store_true', default=False)
@@ -119,6 +120,7 @@ if __name__ == "__main__":
     verbose = args.verbose
     parallel = args.parallel
     eccentric = args.eccentric
+    nknown = args.nknown
     nthreads = args.nthreads
     inputfile = args.inputfile
     starfile = args.starfile
@@ -261,9 +263,19 @@ if __name__ == "__main__":
             
     else:
         
-        uncertainties = fisher_grid_series(Sigma_inv, obstime, gamma_mask, mstar,
-                               m_basis, p_basis, phi_basis, ecc_basis=ecc_basis, omega_basis=omega_basis,
-                               eccentric=eccentric)
+        if int(nknown)==0:
+            uncertainties = fisher_grid_series(Sigma_inv, obstime, gamma_mask, mstar,
+                                   m_basis, p_basis, phi_basis, ecc_basis=ecc_basis, omega_basis=omega_basis,
+                                   eccentric=eccentric)
+        elif int(nknown)==1:
+            
+            params_0 = np.array([float(config['K_0']),float(config['period_0']),float(config['phi_0']),float(config['ecc_0']),float(config['omega_0'])])   
+            
+            uncertainties = fisher_grid_series_two(Sigma_inv, obstime, gamma_mask, mstar,
+                                   m_basis, p_basis, phi_basis, params_0, ecc_basis=ecc_basis, omega_basis=omega_basis,
+                                   eccentric=eccentric)
+        else:
+            print('Not yet implemented for >=1 known planet.')
 
     Ck=np.array(uncertainties[0], dtype=float)
     Cp=np.array(uncertainties[1], dtype=float)
