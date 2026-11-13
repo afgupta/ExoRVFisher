@@ -1,4 +1,4 @@
-# ExoRVFisher (*working name*) 
+# ExoRVFisher
 Scripts to calculate and visualize the Fisher information content for radial velocity measurements of exoplanet orbits.
 Adapted from the code used in [Gupta & Bedell et al. (2024)](https://ui.adsabs.harvard.edu/abs/2024AJ....168...29G/abstract), with added functionality to handle eccentric orbits.
 
